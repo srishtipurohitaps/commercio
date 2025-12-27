@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commercio | Real AI Study Companion</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1', // Indigo 500
+                        secondary: '#a855f7', // Purple 500
+                        darkbg: '#0f172a', // Slate 900
+                        glass: 'rgba(30, 41, 59, 0.7)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tools: html2pdf -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-darkbg text-white font-sans antialiased min-h-screen flex overflow-hidden">
+
+    <!-- Mobile Menu Button -->
+    <button onclick="app.toggleMobileMenu()"
+        class="fixed top-4 left-4 z-50 p-2 bg-slate-800 rounded-lg text-white md:hidden shadow-lg border border-slate-700">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <aside
+        class="fixed md:relative w-64 h-full bg-slate-900 border-r border-slate-700 flex flex-col transition-transform duration-300 z-40 transform -translate-x-full md:translate-x-0"
+        id="sidebar">
+        <div class="p-6 flex items-center gap-3 pt-16 md:pt-6">
+            <div
+                class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-purple-500/20">
+                <i class="fa-solid fa-brain text-white text-xl"></i>
+            </div>
+            <h1
+                class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 tracking-tight">
+                Commercio</h1>
+        </div>
+
+        <!-- Grade Selector -->
+        <div class="px-6 mb-4">
+            <div class="bg-slate-950 p-1 rounded-xl flex border border-slate-800">
+                <button onclick="app.setGrade('11')" id="grade-btn-11"
+                    class="flex-1 py-2 text-sm rounded-lg text-slate-400 hover:text-white transition-all">Class
+                    11</button>
+                <button onclick="app.setGrade('12')" id="grade-btn-12"
+                    class="flex-1 py-2 text-sm rounded-lg bg-primary text-white font-bold shadow-lg transition-all">Class
+                    12</button>
+            </div>
+        </div>
+
+        <nav class="flex-1 px-4 space-y-2">
+            <button onclick="app.navigate('dashboard')"
+                class="nav-btn active w-full text-left px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group flex items-center gap-3"
+                data-page="dashboard">
+                <i class="fa-solid fa-grid-2 text-slate-400 group-hover:text-primary transition-colors"></i>
+                <span class="font-medium">Dashboard</span>
+            </button>
+            <button onclick="app.navigate('accounts')"
+                class="nav-btn w-full text-left px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group flex items-center gap-3"
+                data-page="accounts">
+                <i class="fa-solid fa-calculator text-slate-400 group-hover:text-emerald-400 transition-colors"></i>
+                <span class="font-medium">Accountancy</span>
+            </button>
+            <button onclick="app.navigate('bst')"
+                class="nav-btn w-full text-left px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group flex items-center gap-3"
+                data-page="bst">
+                <i class="fa-solid fa-briefcase text-slate-400 group-hover:text-amber-400 transition-colors"></i>
+                <span class="font-medium">Business Studies</span>
+            </button>
+            <button onclick="app.navigate('eco')"
+                class="nav-btn w-full text-left px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group flex items-center gap-3"
+                data-page="eco">
+                <i class="fa-solid fa-chart-line text-slate-400 group-hover:text-rose-400 transition-colors"></i>
+                <span class="font-medium">Economics</span>
+            </button>
+        </nav>
+
+
+    </aside>
+
+    <!-- Main Content -->
+    <main
+        class="flex-1 relative overflow-y-auto overflow-x-hidden bg-[url('https://grainy-gradients.vercel.app/noise.svg')]">
+        <!-- Background Glows -->
+        <div
+            class="fixed top-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] pointer-events-none">
+        </div>
+        <div
+            class="fixed bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[100px] pointer-events-none">
+        </div>
+
+        <div class="container mx-auto p-4 md:p-8 max-w-6xl relative z-10">
+
+            <!-- Dashboard View -->
+            <section id="dashboard-view" class="view-section animate-fade-in block">
+                <header class="mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-2">Welcome back, Scholar.</h2>
+                    <p class="text-slate-400">Your AI-powered commerce command center is ready.</p>
+                </header>
+
+                <!-- Widgets Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Countdown Widget -->
+                    <div
+                        class="bg-gradient-to-r from-blue-900/40 to-slate-900/40 border border-blue-500/30 rounded-2xl p-6 flex items-center justify-between relative overflow-hidden group">
+                        <div class="z-10">
+                            <h3 class="text-blue-200 text-sm font-semibold uppercase tracking-wider mb-1">Board Exams
+                            </h3>
+                            <div class="text-4xl font-bold text-white" id="countdown-days">--</div>
+                            <p class="text-slate-400 text-xs mt-1">Days Remaining (Approx)</p>
+                        </div>
+                        <i
+                            class="fa-solid fa-hourglass-half text-6xl text-blue-500/20 group-hover:scale-110 transition-transform duration-500 absolute right-4"></i>
+                    </div>
+
+                    <!-- Motivation Widget -->
+                    <div
+                        class="bg-gradient-to-r from-purple-900/40 to-slate-900/40 border border-purple-500/30 rounded-2xl p-6 flex flex-col justify-center relative overflow-hidden">
+                        <i class="fa-solid fa-quote-left text-3xl text-purple-500/30 mb-2"></i>
+                        <p class="text-slate-200 italic text-lg" id="daily-quote">"The only way to do great work is to
+                            love what you do."</p>
+                        <p class="text-purple-400 text-xs mt-2 text-right font-bold" id="quote-author">- Steve Jobs
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Cards -->
+                    <div onclick="app.navigate('accounts')"
+                        class="card group cursor-pointer hover:scale-[1.02] transition-transform">
+                        <div
+                            class="bg-slate-800/80 backdrop-blur-md border border-slate-700 p-6 rounded-2xl h-full shadow-lg hover:shadow-emerald-500/10 hover:border-emerald-500/30 transition-all">
+                            <div
+                                class="w-12 h-12 rounded-lg bg-emerald-500/20 flex items-center justify-center mb-4 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                                <i class="fa-solid fa-receipt text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Journal Wizard</h3>
+                            <p class="text-slate-400 text-sm">Convert complex transaction text into perfect Journal
+                                Entries instanty.</p>
+                        </div>
+                    </div>
+
+                    <div onclick="app.navigate('bst')"
+                        class="card group cursor-pointer hover:scale-[1.02] transition-transform">
+                        <div
+                            class="bg-slate-800/80 backdrop-blur-md border border-slate-700 p-6 rounded-2xl h-full shadow-lg hover:shadow-amber-500/10 hover:border-amber-500/30 transition-all">
+                            <div
+                                class="w-12 h-12 rounded-lg bg-amber-500/20 flex items-center justify-center mb-4 text-amber-400 group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                                <i class="fa-solid fa-lightbulb text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Case Cracker</h3>
+                            <p class="text-slate-400 text-sm">Paste a case study. AI finds the specific Principle or
+                                Marketing concept.</p>
+                        </div>
+                    </div>
+
+                    <div onclick="app.navigate('eco')"
+                        class="card group cursor-pointer hover:scale-[1.02] transition-transform">
+                        <div
+                            class="bg-slate-800/80 backdrop-blur-md border border-slate-700 p-6 rounded-2xl h-full shadow-lg hover:shadow-rose-500/10 hover:border-rose-500/30 transition-all">
+                            <div
+                                class="w-12 h-12 rounded-lg bg-rose-500/20 flex items-center justify-center mb-4 text-rose-400 group-hover:bg-rose-500 group-hover:text-white transition-colors">
+                                <i class="fa-solid fa-chart-area text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Eco Concept Logic</h3>
+                            <p class="text-slate-400 text-sm">Understand Shifts vs Movements and Elasticity with
+                                Socratic explanations.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-gradient-to-r from-slate-800 to-slate-900 border border-slate-700 rounded-2xl p-6">
+                    <h3 class="text-lg font-semibold mb-4"><i class="fa-solid fa-bolt text-yellow-400 mr-2"></i> Quick
+                        Actions</h3>
+                    <div class="flex gap-2 md:gap-4">
+                        <div class="relative flex-1">
+                            <input type="text" id="global-query" placeholder="Ask anything across all subjects..."
+                                class="w-full bg-slate-950/50 border border-slate-700 rounded-xl pl-4 pr-10 py-3 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+                            <button onclick="app.startVoice('global-query')"
+                                class="absolute right-2 top-2 w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 flex items-center justify-center transition-colors">
+                                <i class="fa-solid fa-microphone"></i>
+                            </button>
+                        </div>
+                        <button onclick="app.handleGlobalSearch()"
+                            class="bg-primary hover:bg-primary/90 text-white px-4 md:px-6 py-3 rounded-xl font-medium shadow-lg shadow-indigo-500/20 transition-all">
+                            Ask AI
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Accounts View -->
+            <section id="accounts-view" class="view-section hidden animate-fade-in">
+                <header class="mb-6 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold text-white mb-1">Journal Entry Wizard</h2>
+                        <p class="text-emerald-400 font-medium text-sm">ACCOUNTANCY</p>
+                    </div>
+                    <button onclick="app.exportPDF('accounts-output', 'journal_entry')"
+                        class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-sm border border-slate-700 transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-download"></i> Save PDF
+                    </button>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[70vh]">
+                    <!-- Input Area -->
+                    <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 flex flex-col relative">
+                        <label class="block text-slate-300 text-sm font-medium mb-3">Describe the Transaction</label>
+                        <div class="relative flex-1 flex flex-col">
+                            <textarea id="accounts-input"
+                                class="w-full flex-1 bg-slate-950 border border-slate-700 rounded-xl p-4 text-slate-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none resize-none transition-all pb-10"
+                                placeholder="e.g. Purchased machinery for 50,000 from Rahul on credit and paid 2,000 for installation in cash."></textarea>
+                            <button onclick="app.startVoice('accounts-input')"
+                                class="absolute right-4 bottom-4 w-10 h-10 rounded-full bg-slate-800 hover:bg-emerald-600 hover:text-white text-slate-400 flex items-center justify-center transition-all shadow-lg border border-slate-700">
+                                <i class="fa-solid fa-microphone"></i>
+                            </button>
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <button onclick="app.processAccounts()"
+                                class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl font-medium shadow-lg shadow-emerald-500/20 flex items-center gap-2">
+                                <i class="fa-solid fa-magic-wand-sparkles"></i> Generate Entry
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Output Area -->
+                    <div id="accounts-output"
+                        class="bg-slate-950 border border-slate-700 rounded-2xl p-0 overflow-y-auto relative">
+                        <div class="h-full w-full flex flex-col justify-center items-center text-slate-400"
+                            id="accounts-placeholder">
+                            <i class="fa-solid fa-file-invoice text-4xl mb-4 opacity-50"></i>
+                            <p>Journal Entry will appear here</p>
+                        </div>
+                        <!-- Result will be injected here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- BST View -->
+            <section id="bst-view" class="view-section hidden animate-fade-in">
+                <header class="mb-6 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold text-white mb-1">Case Study Cracker</h2>
+                        <p class="text-amber-400 font-medium text-sm">BUSINESS STUDIES</p>
+                    </div>
+                    <button onclick="app.exportPDF('bst-output', 'case_study_analysis')"
+                        class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-sm border border-slate-700 transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-download"></i> Save PDF
+                    </button>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[70vh]">
+                    <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 flex flex-col">
+                        <label class="block text-slate-300 text-sm font-medium mb-3">Paste Case Study</label>
+                        <div class="relative flex-1 flex flex-col">
+                            <textarea id="bst-input"
+                                class="w-full flex-1 bg-slate-950 border border-slate-700 rounded-xl p-4 text-slate-200 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none resize-none transition-all pb-10"
+                                placeholder="e.g. Identify the principle of management violations..."></textarea>
+                            <button onclick="app.startVoice('bst-input')"
+                                class="absolute right-4 bottom-4 w-10 h-10 rounded-full bg-slate-800 hover:bg-amber-600 hover:text-white text-slate-400 flex items-center justify-center transition-all shadow-lg border border-slate-700">
+                                <i class="fa-solid fa-microphone"></i>
+                            </button>
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <button onclick="app.processBST()"
+                                class="bg-amber-600 hover:bg-amber-500 text-white px-6 py-3 rounded-xl font-medium shadow-lg shadow-amber-500/20 flex items-center gap-2">
+                                <i class="fa-solid fa-magnifying-glass"></i> Analyze Case
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="bst-output" class="bg-slate-950 border border-slate-700 rounded-2xl p-6 overflow-y-auto">
+                        <div class="h-full flex flex-col justify-center items-center text-slate-500"
+                            id="bst-placeholder">
+                            <i class="fa-solid fa-search text-4xl mb-4 opacity-30"></i>
+                            <p>Analysis will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Eco View -->
+            <section id="eco-view" class="view-section hidden animate-fade-in">
+                <header class="mb-6">
+                    <h2 class="text-3xl font-bold text-white mb-1">Concept Clarifier</h2>
+                    <p class="text-rose-400 font-medium text-sm">ECONOMICS</p>
+                </header>
+
+                <div class="flex flex-col h-[70vh] bg-slate-800/50 border border-slate-700 rounded-2xl overflow-hidden">
+                    <div id="eco-chat-history" class="flex-1 p-6 overflow-y-auto space-y-4">
+                        <!-- Chat messages -->
+                        <div class="flex gap-4">
+                            <div
+                                class="w-8 h-8 rounded-full bg-rose-500/20 flex items-center justify-center text-rose-400 flex-shrink-0">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div class="bg-slate-700/50 p-4 rounded-2xl rounded-tl-none max-w-[80%] text-slate-200">
+                                I am your Economics Tutor. Ask me about Demand, Supply, Market Forms, or National
+                                Income. I will explain the grapical logic.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-slate-900 border-t border-slate-700 flex gap-4 relative">
+                        <div class="flex-1 relative">
+                            <input type="text" id="eco-input"
+                                class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 pr-10 outline-none focus:border-rose-500 transition-colors"
+                                placeholder="e.g. Why is PPC concave to the origin?">
+                            <button onclick="app.startVoice('eco-input')"
+                                class="absolute right-2 top-1.5 w-8 h-8 rounded-lg text-slate-400 hover:text-rose-500 flex items-center justify-center transition-colors">
+                                <i class="fa-solid fa-microphone"></i>
+                            </button>
+                        </div>
+                        <button onclick="app.processEco()"
+                            class="bg-rose-600 hover:bg-rose-500 text-white px-6 py-3 rounded-xl font-medium transition-colors">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script src="ai.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
